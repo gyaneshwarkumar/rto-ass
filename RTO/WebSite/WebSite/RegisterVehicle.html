@@ -1,0 +1,37 @@
+﻿<!doctype html>
+<html>
+<head>
+    <title>Vehicle Registration</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+</head>
+<body ng-app="RegisterVehicle">
+    <script>
+        angular.module('RegisterVehicle', [])
+        .controller('RegisterVehicleController', ['$scope', '$http', function ($scope, $http) {
+            $scope.submit = function () {
+                if ($scope.Name) {
+                    var rt = {"RegisterationNo": $scope.RegisterationNo,"OwnerName": $scope.OwnerName,"RoadTaxAmount": $scope.RoadTaxAmount}
+
+
+
+
+                    $http.post('http://localhost:51440/api/Vehicle/RegisterVehicle', rto).
+                    success(function (data, status, headers, config) {
+                        alert('Product Added Successfully');
+                    }).
+                    error(function (data, status, headers, config) {
+                        alert("erro");
+                    });
+                }
+            };
+        }]);
+    </script>
+    <h2>vehicle registation form</h2>
+    <form ng-submit="submit()" ng-controller="RegisterVehicleController">
+        <div>Vehicle Reg Num:-<input type="text" ng-model="RegisterationNo" required></div></br>
+        <div>Owner Full Name:-<input type="text" ng-model="OwnerName" required> </div> </br>
+        <div> Road Tax Amount:- <input type="text" ng-model="RoadTaxAmount"> </div> </br>
+        <div> <input type="submit" id="rtosubmit" value="Register" /></div> </br>
+    </form>
+</body>
+</html>

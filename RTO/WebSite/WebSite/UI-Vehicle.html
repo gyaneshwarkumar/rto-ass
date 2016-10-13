@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>RTO </title>
+</head>
+<body>
+    <div>
+        <h2>Registraion and Update</h2>
+        Vehicle Reg Num:- <input type="text" name="RegisterName" id="RegisterName" /> <br /><br />
+        Owner Full Name:- <input type="text" name="OwnerName" id="OwnerName" /><br /><br />
+        Road Tax Amount:- <input type="text" name="RoadTax" id="RoadTax" /><br /><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="Register/Update" onclick="Register();" />
+      
+    </div>
+
+
+    <div>
+        <h2>All Vehicle</h2>
+        <ul id="Vehicles" />
+    </div>
+    <div>
+        <h2>Search by Vehicle Registration Number</h2>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" id="VehId" size="15" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="Vehicle" />
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var uri = 'http://localhost:51440/api/Vehicle';
+
+    $(document).ready(function () {
+      // Send an AJAX request
+      $.getJSON(uri)
+          .done(function (data) {
+            // On success, 'data' contains a list of Vehicles.
+            $.each(data, function (key, item) {
+              // Add a list item for the Vehicle.
+              $('<li>', { text: formatItem(item) }).appendTo($('#Vehicles'));
+            });
+          });
+    });
+
+    function formatItem(item) {
+        return item.RegisterationNo + ': ' + item.OwnerName + ':' + item.RoadTaxAmount;
+    }
+
+    function find() {
+        var id = $('#VehId').val();
+        $.getJSON(uri + '/GetVehicle?VehicleNumber=' + id)
+          .done(function (data) {
+            $('#Vehicle').text(formatItem(data));
+          })
+          .fail(function (jqXHR, textStatus, err) {
+            $('#Vehicle').text('Error: ' + err);
+          });
+    }
+
+    function Register() {
+        var Vehicle = new Object();
+        Vehicle.RegisterationNo = $('#RegisterName').val();
+        Vehicle.OwnerName = $('#OwnerName').val();
+        Vehicle.RoadTaxAmount = $('#RoadTax').val();
+        var url = 'http://localhost:51440/api/Vehicle/RegisterVehicle';
+        $.post(url, Vehicle, function (data, textStatus) {
+            //if(textStatus="success")
+            alert(data)
+        }, "json");
+    }
+    </script>
+</body>
+</html>

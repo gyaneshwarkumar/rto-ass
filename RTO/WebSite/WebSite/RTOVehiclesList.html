@@ -1,0 +1,30 @@
+﻿<body ng-app="VehicleApp">
+    <h1>Vehicle List</h1>
+    <div ng-controller="VehicleController">
+        <table ng-repeat="vehicle in vehicles" border="1">
+            <tr>
+        
+                <td>{{vehicle.RegisterationNo}}</td>
+                <td>{{vehicle.OwnerName}}</td>
+                <td>{{vehicle.RoadTaxAmount}}</td>
+            </tr>
+
+        </table>
+    </div>
+    
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script>
+    var app = angular.module("VehicleApp", []);
+    app.controller("VehicleController", function ($scope, $http) {
+        $http.get('http://localhost:51440/api/Vehicle').
+          success(function (data, status, headers, config) {
+              $scope.vehicles = data;
+              
+          }).
+          error(function (data, status, headers, config) {
+              alert("erro");
+          });
+    });
+</script>
